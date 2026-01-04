@@ -4,13 +4,13 @@ workflows:
     max_build_duration: 60
     instance_type: mac_mini_m1
 
+    integrations:
+      app_store_connect: Codemagic
+
     environment:
       ios_signing:
         distribution_type: app_store
         bundle_identifier: org.antasonlus.agendantas
-      vars:
-        XCODE_WORKSPACE: "ios/Runner.xcworkspace"
-        XCODE_SCHEME: "Runner"
       flutter: stable
       xcode: latest
       cocoapods: default
@@ -24,21 +24,24 @@ workflows:
           cd ios
           pod install
 
-      - name: Set up code signing
+      - name: Set up code signing settings on Xcode project
         script: |
           xcode-project use-profiles
 
       - name: Build iOS IPA
         script: |
           flutter build ipa --release \
+            --build-name=1.1.3 \
+            --build-number=14 \
             --export-options-plist=/Users/builder/export_options.plist
 
     artifacts:
       - build/ios/ipa/*.ipa
       - /tmp/xcodebuild_logs/*.log
-      - flutter_drive.log
 
     publishing:
       app_store_connect:
         auth: integration
         submit_to_testflight: true
+        beta_groups:
+          - Internal Testers
