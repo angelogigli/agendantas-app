@@ -16,15 +16,25 @@ workflows:
       cocoapods: default
 
     scripts:
-      - name: Clean and get Flutter packages
+      - name: Deep clean all caches
         script: |
           flutter clean
+          rm -rf ~/.pub-cache
+          rm -rf build/
+          rm -rf .dart_tool/
+          cd ios
+          rm -rf Pods Podfile.lock .symlinks
+          rm -rf ~/Library/Developer/Xcode/DerivedData/*
+          rm -rf Runner.xcworkspace/xcuserdata
+          cd ..
           flutter pub get
 
       - name: Install CocoaPods dependencies
         script: |
           cd ios
-          rm -rf Pods Podfile.lock
+          pod cache clean --all
+          pod deintegrate
+          pod setup
           pod install --repo-update
 
       - name: Set up code signing settings on Xcode project
@@ -35,7 +45,7 @@ workflows:
         script: |
           flutter build ipa --release \
             --build-name=1.1.3 \
-            --build-number=21 \
+            --build-number=22 \
             --export-options-plist=/Users/builder/export_options.plist
 
     artifacts:
