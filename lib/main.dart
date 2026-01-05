@@ -1,78 +1,64 @@
 import 'package:flutter/material.dart';
-import 'package:provider/provider.dart';
-import 'services/auth_service.dart';
-import 'utils/theme.dart';
-import 'screens/login_screen.dart';
-import 'screens/main_screen.dart';
 
 void main() {
-  runApp(const AgendAntasApp());
+  runApp(const MyApp());
 }
 
-class AgendAntasApp extends StatelessWidget {
-  const AgendAntasApp({super.key});
+class MyApp extends StatelessWidget {
+  const MyApp({super.key});
 
   @override
   Widget build(BuildContext context) {
-    return ChangeNotifierProvider(
-      create: (_) => AuthService(),
-      child: MaterialApp(
-        title: 'AgendANTAS',
-        debugShowCheckedModeBanner: false,
-        theme: AppTheme.lightTheme,
-        home: const AuthWrapper(),
+    return MaterialApp(
+      title: 'AgendANTAS Test',
+      debugShowCheckedModeBanner: false,
+      theme: ThemeData(
+        colorScheme: ColorScheme.fromSeed(seedColor: Colors.blue),
+        useMaterial3: true,
       ),
+      home: const TestPage(),
     );
   }
 }
 
-class AuthWrapper extends StatefulWidget {
-  const AuthWrapper({super.key});
-
-  @override
-  State<AuthWrapper> createState() => _AuthWrapperState();
-}
-
-class _AuthWrapperState extends State<AuthWrapper> {
-  bool _initialized = false;
-
-  @override
-  void initState() {
-    super.initState();
-    _initAuth();
-  }
-
-  Future<void> _initAuth() async {
-    try {
-      final auth = Provider.of<AuthService>(context, listen: false);
-      await auth.checkSession();
-    } catch (e) {
-      debugPrint('Init auth error: $e');
-    }
-    if (mounted) {
-      setState(() {
-        _initialized = true;
-      });
-    }
-  }
+class TestPage extends StatelessWidget {
+  const TestPage({super.key});
 
   @override
   Widget build(BuildContext context) {
-    if (!_initialized) {
-      return const Scaffold(
-        body: Center(
-          child: CircularProgressIndicator(),
+    return Scaffold(
+      appBar: AppBar(
+        title: const Text('AgendANTAS'),
+        backgroundColor: Theme.of(context).colorScheme.inversePrimary,
+      ),
+      body: const Center(
+        child: Column(
+          mainAxisAlignment: MainAxisAlignment.center,
+          children: [
+            Icon(
+              Icons.check_circle,
+              size: 100,
+              color: Colors.green,
+            ),
+            SizedBox(height: 20),
+            Text(
+              'App Funzionante!',
+              style: TextStyle(
+                fontSize: 24,
+                fontWeight: FontWeight.bold,
+              ),
+            ),
+            SizedBox(height: 10),
+            Text(
+              'Build 29 - Test Minimale',
+              style: TextStyle(
+                fontSize: 16,
+                color: Colors.grey,
+              ),
+            ),
+          ],
         ),
-      );
-    }
-
-    return Consumer<AuthService>(
-      builder: (context, auth, _) {
-        if (auth.isLoggedIn) {
-          return const MainScreen();
-        }
-        return const LoginScreen();
-      },
+      ),
     );
   }
 }
