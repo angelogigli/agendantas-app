@@ -11,8 +11,8 @@ workflows:
       ios_signing:
         distribution_type: app_store
         bundle_identifier: org.antasonlus.agendantas
-      flutter: stable
-      xcode: latest
+      flutter: 3.16.9
+      xcode: 15.2
       cocoapods: default
 
     scripts:
@@ -45,7 +45,7 @@ workflows:
         script: |
           flutter build ipa --release \
             --build-name=1.1.3 \
-            --build-number=24 \
+            --build-number=25 \
             --export-options-plist=/Users/builder/export_options.plist
 
     artifacts:
